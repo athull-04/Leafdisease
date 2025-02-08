@@ -4,6 +4,10 @@ from flask import Flask, render_template, request, jsonify
 import torch
 from torchvision import transforms, models
 from PIL import Image
+import gdown
+model_url = 'https://drive.google.com/uc?id=1PO1ebNY67JhRE4LRf6hEnLykW3kDnMBF'
+gdown.download(model_url, 'leaf_disease_model.pth', quiet=False)
+
 
 app = Flask(__name__)
 
