@@ -58,8 +58,8 @@ scipy==1.13.1
 six==1.17.0
 sympy==1.13.1
 torch==2.0.1
+torchaudio
 torch-tb-profiler==0.4.3
-torchaudio==2.6.0
 torchvision==0.21.0
 tqdm==4.67.1
 typing_extensions==4.12.2
