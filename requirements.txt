@@ -57,7 +57,7 @@ scikit-learn==1.6.1
 scipy==1.13.1
 six==1.17.0
 sympy==1.13.1
-torch==2.6.0+cu118
+torch==2.0.1
 torch-tb-profiler==0.4.3
 torchaudio==2.6.0
 torchvision==0.21.0
