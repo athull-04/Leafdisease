@@ -10,8 +10,10 @@ model_url = 'https://drive.google.com/uc?id=1PO1ebNY67JhRE4LRf6hEnLykW3kDnMBF'
 
 # Check if model already exists, otherwise download it
 if not os.path.exists('leaf_disease_model.pth'):
+    print("Downloading model...")
     gdown.download(model_url, 'leaf_disease_model.pth', quiet=False)
 
+# Initialize Flask app
 app = Flask(__name__)
 
 # Load the trained model
@@ -45,8 +47,14 @@ transform = transforms.Compose([
 ])
 
 # Dynamically fetch class names from the dataset directory (train)
-train_dir = './data/train'  # Update this with the path to your train directory
-class_names = [folder for folder in os.listdir(train_dir) if os.path.isdir(os.path.join(train_dir, folder))]
+class_names = [
+    'Apple___Black_rot',
+    'Apple_Cedar_rust',
+    'Apple_healthy',
+    'Apple_scab',
+    'Cherry_Powdery_mildew',
+    'Cherry_healthy',
+]
 
 def predict_image(image_path):
     img = Image.open(image_path)
@@ -63,14 +71,14 @@ def index():
 @app.route('/predict', methods=['POST'])
 def predict():
     if 'file' not in request.files:
-        return "No file part", 400
+        return jsonify({"error": "No file part"}), 400
     file = request.files['file']
     if file.filename == '':
-        return "No selected file", 400
+        return jsonify({"error": "No selected file"}), 400
 
     # Check if the file is an image (optional but recommended)
     if not file.filename.lower().endswith(('png', 'jpg', 'jpeg')):
-        return "Invalid file type. Please upload an image.", 400
+        return jsonify({"error": "Invalid file type. Please upload an image."}), 400
 
     # Create the uploads directory if it doesn't exist
     os.makedirs('uploads', exist_ok=True)
@@ -81,6 +89,5 @@ def predict():
     return jsonify({"prediction": predicted_class})
 
 if __name__ == '__main__':
-    app.run(debug=True)
     port = int(os.environ.get('PORT', 5000))  # Use Render's port
-    app.run(host='0.0.0.0', port=port)
+    app.run(debug=True, host='0.0.0.0', port=port)  # Single app.run() is enough
