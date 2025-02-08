@@ -1,13 +1,16 @@
 import os
 from flask import Flask, render_template, request, jsonify
-
 import torch
 from torchvision import transforms, models
 from PIL import Image
 import gdown
-model_url = 'https://drive.google.com/uc?id=1PO1ebNY67JhRE4LRf6hEnLykW3kDnMBF'
-gdown.download(model_url, 'leaf_disease_model.pth', quiet=False)
 
+# Use the correct Google Drive URL for downloading the model
+model_url = 'https://drive.google.com/uc?id=1PO1ebNY67JhRE4LRf6hEnLykW3kDnMBF'
+
+# Check if model already exists, otherwise download it
+if not os.path.exists('leaf_disease_model.pth'):
+    gdown.download(model_url, 'leaf_disease_model.pth', quiet=False)
 
 app = Flask(__name__)
 
@@ -15,7 +18,6 @@ app = Flask(__name__)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = models.resnet101(weights=None)  # Change from pretrained=False to weights=None for newer versions
 model.fc = torch.nn.Linear(model.fc.in_features, 6)  # Match the original number of classes (6)
-  # Replace 5 with the number of disease classes
 
 # Load the saved model state_dict
 state_dict = torch.load('leaf_disease_model.pth', map_location=device)
